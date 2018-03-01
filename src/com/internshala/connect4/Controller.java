@@ -164,9 +164,15 @@ public class Controller implements Initializable{
 	}
 
 	public void resetGame() {
-		insertedDiscsArray = new Disc[ROWS][COLUMNS];
+		for(int row = 0; row < ROWS; row++){
+			for(int col = 0; col < COLUMNS; col++){
+				insertedDiscsArray[row][col] = null;
+			}
+		}
 		insertedDiscPane.getChildren().clear();
 		isPlayerOneTurn = true; playerNameLabel.setText(PLAYER_ONE);
+		isAllowedToInsert = true;
+		createPlayGround();
 	}
 
 	public void exitGame() {
