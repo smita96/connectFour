@@ -101,6 +101,7 @@ public class Controller implements Initializable{
 		translateTransition.setOnFinished(event -> {
 			if(gameEnded(finalFreeRow,finalCol)){
 				gameOver();
+				return;
 			}
 			isPlayerOneTurn = !isPlayerOneTurn;
 			playerNameLabel.setText(isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO);
@@ -111,7 +112,11 @@ public class Controller implements Initializable{
 	private boolean gameEnded(int finalFreeRow, int finalCol) {
 		List<Point2D> verticalPoints = IntStream.rangeClosed(finalFreeRow-3,finalFreeRow+3).mapToObj(r -> new Point2D(r,finalCol)).collect(Collectors.toList());
 		List<Point2D> horizontalPoints = IntStream.rangeClosed(finalCol-3,finalCol+3).mapToObj(c -> new Point2D(finalFreeRow,c)).collect(Collectors.toList());
-		return checkCombinations(verticalPoints) || checkCombinations(horizontalPoints);
+		Point2D startPoint1 = new Point2D(finalFreeRow-3,finalCol+3);
+		List<Point2D> diagonal1Points = IntStream.rangeClosed(0,6).mapToObj(i -> startPoint1.add(i,-i)).collect(Collectors.toList());
+		Point2D startPoint2 = new Point2D(finalFreeRow-3,finalCol-3);
+		List<Point2D> diagonal2Points = IntStream.rangeClosed(0,6).mapToObj(i -> startPoint2.add(i,i)).collect(Collectors.toList());
+		return checkCombinations(verticalPoints) || checkCombinations(horizontalPoints) || checkCombinations(diagonal1Points) || checkCombinations(diagonal2Points);
 	}
 
 	private boolean checkCombinations(List<Point2D> points) {
