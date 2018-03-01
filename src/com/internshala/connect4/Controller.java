@@ -34,6 +34,7 @@ public class Controller implements Initializable{
 	private static String PLAYER_ONE = "Player One", PLAYER_TWO = "Player Two";
 	private static final String DISCCOLOR1 = "#24303e", DISCCOLOR2 = "4caa88";
 	private static boolean isPlayerOneTurn = true;
+	private static int freeCells = ROWS*COLUMNS;
 
 	@FXML
 	public GridPane rootGridPane;
@@ -85,6 +86,7 @@ public class Controller implements Initializable{
 			rectangle.setOnMouseClicked(event -> {
 				if(isAllowedToInsert){
 					isAllowedToInsert = false;
+					freeCells--;
 					insertDisc(new Disc(isPlayerOneTurn), finalCol);
 				}
 			});
@@ -111,12 +113,18 @@ public class Controller implements Initializable{
 		int finalFreeRow = freeRow;
 		translateTransition.setOnFinished(event -> {
 			if(gameEnded(finalFreeRow,finalCol)){
-				gameOver();
+				gameOver(0);
 			}
 			else {
-				isAllowedToInsert = true;
-				isPlayerOneTurn = !isPlayerOneTurn;
-				playerNameLabel.setText(isPlayerOneTurn ? PLAYER_ONE : PLAYER_TWO);
+				if(freeCells == 0){
+					gameOver(1);
+				}
+				else{
+					isAllowedToInsert = true;
+					isPlayerOneTurn = !isPlayerOneTurn;
+					playerNameLabel.setText(isPlayerOneTurn ? PLAYER_ONE : PLAYER_TWO);
+				}
+
 			}
 		});
 		insertedDiscPane.getChildren().add(disc);
@@ -149,14 +157,21 @@ public class Controller implements Initializable{
 		else return insertedDiscsArray[x][y];
 	}
 
-	private void gameOver() {
+	private void gameOver(int verdict) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle("Connect Four");
-		alert.setHeaderText((isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO) + " WON");
 		alert.setContentText("Want to play again?");
 		ButtonType yesBtn = new ButtonType("Yes");
 		ButtonType noBtn = new ButtonType("No, Exit");
 		alert.getButtonTypes().setAll(yesBtn,noBtn);
+
+		if(verdict == 0){
+			alert.setHeaderText((isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO) + " WON");
+		}
+		else{
+			alert.setHeaderText("Match Draw, come on ppl!");
+		}
+
 		Platform.runLater(()->{
 			Optional<ButtonType> clickedBtn = alert.showAndWait();
 			if(clickedBtn.isPresent() && clickedBtn.get() == yesBtn) resetGame(); else exitGame();
@@ -164,15 +179,10 @@ public class Controller implements Initializable{
 	}
 
 	public void resetGame() {
-		for(int row = 0; row < ROWS; row++){
-			for(int col = 0; col < COLUMNS; col++){
-				insertedDiscsArray[row][col] = null;
-			}
-		}
+		insertedDiscsArray = new Disc[ROWS][COLUMNS];
 		insertedDiscPane.getChildren().clear();
 		isPlayerOneTurn = true; playerNameLabel.setText(PLAYER_ONE);
 		isAllowedToInsert = true;
-		createPlayGround();
 	}
 
 	public void exitGame() {
