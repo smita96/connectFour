@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -20,6 +22,7 @@ import java.beans.Transient;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,7 +33,6 @@ public class Controller implements Initializable{
 	private static String PLAYER_ONE = "Player One", PLAYER_TWO = "Player Two";
 	private static final String DISCCOLOR1 = "#24303e", DISCCOLOR2 = "4caa88";
 	private static boolean isPlayerOneTurn = true;
-
 
 	@FXML
 	public GridPane rootGridPane;
@@ -137,9 +139,26 @@ public class Controller implements Initializable{
 	}
 
 	private void gameOver() {
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle((isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO) + " WON");
-		alert.show();
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Connect Four");
+		alert.setHeaderText((isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO) + " WON");
+		alert.setContentText("Want to play again?");
+		ButtonType yesBtn = new ButtonType("Yes");
+		ButtonType noBtn = new ButtonType("No, Exit");
+		alert.getButtonTypes().setAll(yesBtn,noBtn);
+		Platform.runLater(()->{
+			Optional<ButtonType> clickedBtn = alert.showAndWait();
+			if(clickedBtn.isPresent() && clickedBtn.equals(yesBtn)) resetGame();
+			else exitGame();
+		});
+	}
+
+	private void exitGame() {
+		Platform.exit();
+		System.exit(0);
+	}
+
+	private void resetGame() {
 	}
 
 	public class Disc extends Circle{
