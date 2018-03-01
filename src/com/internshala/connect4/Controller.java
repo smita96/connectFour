@@ -61,6 +61,7 @@ public class Controller implements Initializable{
 				Circle circle = new Circle();
 				circle.setRadius(CIRCLE_DIAMETER/2);
 				circle.setCenterX(CIRCLE_DIAMETER/2); circle.setCenterY(CIRCLE_DIAMETER/2);
+				circle.setSmooth(true);
 				circle.setTranslateX(col*(CIRCLE_DIAMETER+6) + CIRCLE_DIAMETER/4); circle.setTranslateY(row*(CIRCLE_DIAMETER+6) + CIRCLE_DIAMETER/4);
 				rectangleWithHoles = Shape.subtract(rectangleWithHoles,circle);
 			}
@@ -158,14 +159,12 @@ public class Controller implements Initializable{
 		insertedDiscsArray = new Disc[ROWS][COLUMNS];
 		insertedDiscPane.getChildren().clear();
 		isPlayerOneTurn = true; playerNameLabel.setText(PLAYER_ONE);
-		createPlayGround();
 	}
 
-	private void exitGame() {
+	public void exitGame() {
 		Platform.exit();
 		System.exit(0);
 	}
-
 
 	public class Disc extends Circle{
 		public boolean isPlayerOneTurn;

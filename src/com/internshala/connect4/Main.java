@@ -42,12 +42,12 @@ public class Main extends Application {
 	private MenuBar createMenu() {
 		Menu fileMenu = new Menu("File");
 		MenuItem newMenuItem = new MenuItem("New");
-		newMenuItem.setOnAction(event -> newGame());
+		newMenuItem.setOnAction(event -> controller.resetGame());
 		MenuItem resetMenuItem = new MenuItem("Reset");
-		resetMenuItem.setOnAction(event -> resetGame());
+		resetMenuItem.setOnAction(event -> controller.resetGame());
 		SeparatorMenuItem separatorMenuItem1 = new SeparatorMenuItem();
 		MenuItem quitMenuItem = new MenuItem("Quit");
-		quitMenuItem.setOnAction(event -> quitGame());
+		quitMenuItem.setOnAction(event -> controller.exitGame());
 		fileMenu.getItems().addAll(newMenuItem,resetMenuItem,separatorMenuItem1,quitMenuItem);
 
 		Menu aboutMenu = new Menu("About");
@@ -77,18 +77,5 @@ public class Main extends Application {
 		alert.setHeaderText("How to Play?");
 		alert.setContentText("Google you lazy! :p");
 		alert.show();
-	}
-
-	private void quitGame() {
-		Platform.exit();
-		System.exit(0);
-	}
-
-	private void resetGame() {
-		controller.resetGame();
-	}
-
-	private void newGame() {
-		controller.resetGame();
 	}
 }
