@@ -19,6 +19,7 @@ import javafx.util.Duration;
 
 
 import java.beans.Transient;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,10 +104,11 @@ public class Controller implements Initializable{
 		translateTransition.setOnFinished(event -> {
 			if(gameEnded(finalFreeRow,finalCol)){
 				gameOver();
-				return;
 			}
-			isPlayerOneTurn = !isPlayerOneTurn;
-			playerNameLabel.setText(isPlayerOneTurn?PLAYER_ONE:PLAYER_TWO);
+			else {
+				isPlayerOneTurn = !isPlayerOneTurn;
+				playerNameLabel.setText(isPlayerOneTurn ? PLAYER_ONE : PLAYER_TWO);
+			}
 		});
 		insertedDiscPane.getChildren().add(disc);
 	}
@@ -148,9 +150,15 @@ public class Controller implements Initializable{
 		alert.getButtonTypes().setAll(yesBtn,noBtn);
 		Platform.runLater(()->{
 			Optional<ButtonType> clickedBtn = alert.showAndWait();
-			if(clickedBtn.isPresent() && clickedBtn.equals(yesBtn)) resetGame();
-			else exitGame();
+			if(clickedBtn.isPresent() && clickedBtn.get() == yesBtn) resetGame(); else exitGame();
 		});
+	}
+
+	public void resetGame() {
+		insertedDiscsArray = new Disc[ROWS][COLUMNS];
+		insertedDiscPane.getChildren().clear();
+		isPlayerOneTurn = true; playerNameLabel.setText(PLAYER_ONE);
+		createPlayGround();
 	}
 
 	private void exitGame() {
@@ -158,8 +166,6 @@ public class Controller implements Initializable{
 		System.exit(0);
 	}
 
-	private void resetGame() {
-	}
 
 	public class Disc extends Circle{
 		public boolean isPlayerOneTurn;

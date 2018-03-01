@@ -85,8 +85,10 @@ public class Main extends Application {
 	}
 
 	private void resetGame() {
+		controller.resetGame();
 	}
 
 	private void newGame() {
+		controller.resetGame();
 	}
 }
