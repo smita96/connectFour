@@ -70,6 +70,8 @@ public class Controller implements Initializable{
 		return rectangleWithHoles;
 	}
 
+	private boolean isAllowedToInsert = true;
+
 	public List<Rectangle> createClickableRows(){
 		List<Rectangle> rectangleList = new ArrayList<>();
 		for(int col = 0; col < COLUMNS; col++){
@@ -80,14 +82,19 @@ public class Controller implements Initializable{
 			rectangle.setOnMouseExited(event -> rectangle.setFill(Color.TRANSPARENT));
 
 			int finalCol = col;
-			rectangle.setOnMouseClicked(event -> insertDisc(new Disc(isPlayerOneTurn), finalCol));
-
+			rectangle.setOnMouseClicked(event -> {
+				if(isAllowedToInsert){
+					isAllowedToInsert = false;
+					insertDisc(new Disc(isPlayerOneTurn), finalCol);
+				}
+			});
 			rectangleList.add(rectangle);
 		}
 		return  rectangleList;
 	}
 
 	public Disc[][] insertedDiscsArray = new Disc[ROWS][COLUMNS];
+
 	private void insertDisc(Disc disc, int finalCol) {
 
 		int row, freeRow = -1;
@@ -98,7 +105,7 @@ public class Controller implements Initializable{
 		insertedDiscsArray[freeRow][finalCol] = disc;
 		disc.setTranslateX(finalCol*(CIRCLE_DIAMETER+6) + CIRCLE_DIAMETER/4);
 
-		TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(.2),disc);
+		TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(.3),disc);
 		translateTransition.setToY(freeRow*(CIRCLE_DIAMETER+6) + CIRCLE_DIAMETER/4);
 		translateTransition.play();
 		int finalFreeRow = freeRow;
@@ -107,6 +114,7 @@ public class Controller implements Initializable{
 				gameOver();
 			}
 			else {
+				isAllowedToInsert = true;
 				isPlayerOneTurn = !isPlayerOneTurn;
 				playerNameLabel.setText(isPlayerOneTurn ? PLAYER_ONE : PLAYER_TWO);
 			}
