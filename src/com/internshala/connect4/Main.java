@@ -37,6 +37,10 @@ public class Main extends Application {
 		primaryStage.setTitle("Connect Four");
 		primaryStage.setResizable(false);
 		primaryStage.show();
+
+
+		int a = new int[10];
+		// the line may break code
 	}
 
 	private MenuBar createMenu() {
